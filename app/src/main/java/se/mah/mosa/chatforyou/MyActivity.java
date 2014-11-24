@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
@@ -18,9 +20,9 @@ import com.firebase.client.FirebaseError;
 
 
 public class MyActivity extends Activity {
+
+
     @Override
-
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
@@ -59,16 +61,63 @@ public class MyActivity extends Activity {
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
+        EditText ETusername;
+        EditText ETpassword;
+
+
+         Firebase mFirebase;
 
         public PlaceholderFragment() {
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            mFirebase.setAndroidContext(getActivity());
+            mFirebase = new Firebase("https://radiant-inferno-8373.firebaseio.com");
+
+
+            super.onCreate(savedInstanceState);
+
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.login_fragment_layout, container, false);
-            return rootView;
+            ETpassword = (EditText) rootView.findViewById(R.id.tvPassword);
+            ETusername = (EditText) rootView.findViewById(R.id.tvUsername);
 
+
+            Button btn = (Button) rootView.findViewById(R.id.btnLogin);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mFirebase.authWithPassword(ETusername.getText().toString(), ETpassword.getText().toString(), new Firebase.AuthResultHandler() {
+                        @Override
+                        public void onAuthenticated(AuthData authData) {
+                            Toast.makeText(getActivity(), "Login successful", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent (getActivity().getApplicationContext(), GroupActivity.class);
+
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onAuthenticationError(FirebaseError error) {
+                            int code = error.getCode();
+
+                            if(code == FirebaseError.EMAIL_TAKEN ) {
+                                Toast.makeText(getActivity(), "email taken ", Toast.LENGTH_SHORT).show();
+                            }else {
+
+
+                                Toast.makeText(getActivity(), "Registration unsuccessful", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+                }
+            });
+            return rootView;
         }
     }
 
@@ -79,20 +128,10 @@ public class MyActivity extends Activity {
        // fm.beginTransaction().addToBackStack(null);
     }
 
-    public void login (View v){
-        mFirebase.authWithPassword("", "", new Firebase.AuthResultHandler() {
-            @Override
-            public void onAuthenticated(AuthData authData) {
-                Toast.makeText(getActivity(), "Login successful", Toast.LENGTH_SHORT).show();
-            }
-            @Override
-            public void onAuthenticationError(FirebaseError error) {
-// Handle errors
-            }
-        });
-        Intent intent = new Intent (this, GroupActivity.class);
-        startActivity(intent);
-    }
+//    public void login (View v){
+//
+//
+//    }
 
 
 }

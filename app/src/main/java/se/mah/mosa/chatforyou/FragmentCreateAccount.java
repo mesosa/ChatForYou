@@ -66,7 +66,7 @@ public class FragmentCreateAccount extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         mFirebase.setAndroidContext(getActivity());
-        mFirebase = new Firebase("https://da401a.firebaseio.com");
+        mFirebase = new Firebase("https://radiant-inferno-8373.firebaseio.com/");
 
 
         super.onCreate(savedInstanceState);
@@ -86,7 +86,7 @@ public class FragmentCreateAccount extends Fragment {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mFirebase.createUser(ETpassword1.getText().toString(), ETusername1.getText().toString(), new Firebase.ResultHandler() {
+                mFirebase.createUser(ETusername1.getText().toString(),ETpassword1.getText().toString(), new Firebase.ResultHandler() {
                     @Override
                     public void onSuccess() {
                         Toast.makeText(getActivity(), "Registration successful", Toast.LENGTH_SHORT).show();
