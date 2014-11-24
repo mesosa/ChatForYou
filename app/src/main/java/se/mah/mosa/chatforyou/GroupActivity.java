@@ -78,7 +78,7 @@ public class GroupActivity extends Activity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     String list_items = dataSnapshot.getValue().toString();
 
-                    String[] values = list_items.split( "");
+                    String[] values = list_items.split(",");
 
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),android.R.layout.simple_list_item_1, values);
                     lv.setAdapter(arrayAdapter);
