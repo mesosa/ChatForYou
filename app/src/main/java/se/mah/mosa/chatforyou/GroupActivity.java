@@ -15,6 +15,7 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,21 @@ import java.util.List;
  * Created by Mosa on 2014-11-21.
  */
 public class GroupActivity extends Activity {
+
+
+    String name;
+    public GroupActivity(){
+    }
+    public GroupActivity(String name) {
+        this.name = name;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+
 
 
     @Override
@@ -41,8 +57,8 @@ public class GroupActivity extends Activity {
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment  {
-        EditText ETusername;
-        EditText ETpassword;
+
+        EditText ETgroupName;
         ListView lv;
         List<String> arraylist;
         Firebase mFirebase;
@@ -50,49 +66,77 @@ public class GroupActivity extends Activity {
         public PlaceholderFragment() {
         }
 
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             mFirebase.setAndroidContext(getActivity());
             mFirebase = new Firebase("https://radiant-inferno-8373.firebaseio.com");
-        }
+
+            mFirebase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String list_items = dataSnapshot.getValue().toString();
+
+                    String[] values = list_items.split( "");
+
+                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),android.R.layout.simple_list_item_1, values);
+                    lv.setAdapter(arrayAdapter);
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+}
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.group_fragment_layout, container, false);
             Button btn = (Button) rootView.findViewById(R.id.btnAddGroup);
+            ETgroupName = (EditText) rootView.findViewById(R.id.editText);
+
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-               arraylist.add("foo");
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),android.R.layout.simple_list_item_1, arraylist);
-            lv.setAdapter(arrayAdapter);
+                    mFirebase.child("group " + ETgroupName.getText().toString()).setValue(ETgroupName.getText().toString());
+
+                    mFirebase.addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(DataSnapshot snapshot, String s) {
+// Add children to your list, and then notify the adapter of the changes
+                            arraylist.add(s);
+                            System.out.println(snapshot.getValue()+ " " + s);  //prints "Do you have data? You'll love Firebase."
+
+                        }
+                        @Override
+                        public void onChildChanged(DataSnapshot snapshot, String s) {
+                        }
+                        @Override
+                        public void onChildRemoved(DataSnapshot snapshot) {
+                        }
+                        @Override
+                        public void onChildMoved(DataSnapshot snapshot, String s) {
+                        }
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                        }
+                    });
+
+                    arraylist.add(ETgroupName.getText().toString());
+               //     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),android.R.layout.simple_list_item_1, arraylist);
+                //    lv.setAdapter(arrayAdapter);
+
                 }
             });
 
             lv = (ListView)rootView.findViewById(R.id.listView);
             arraylist = new ArrayList<String>();
 
-            mFirebase.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot snapshot, String s) {
-// Add children to your list, and then notify the adapter of the changes
 
-                }
-                @Override
-                public void onChildChanged(DataSnapshot snapshot, String s) {
-                }
-                @Override
-                public void onChildRemoved(DataSnapshot snapshot) {
-                }
-                @Override
-                public void onChildMoved(DataSnapshot snapshot, String s) {
-                }
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                }
-            });
             return rootView;
         }
 //        @Override
