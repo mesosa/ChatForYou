@@ -2,10 +2,13 @@ package se.mah.mosa.chatforyou;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -76,13 +79,19 @@ public class GroupActivity extends Activity {
             mFirebase.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+
+                    for(DataSnapshot ds : children){
+                        Log.d("HEJ", ds.getName());
+                    }
+
                     String list_items = dataSnapshot.getValue().toString();
 
                     String[] values = list_items.split(",");
 
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),android.R.layout.simple_list_item_1, values);
                     lv.setAdapter(arrayAdapter);
-
                 }
 
                 @Override
@@ -136,6 +145,24 @@ public class GroupActivity extends Activity {
             lv = (ListView)rootView.findViewById(R.id.listView);
             arraylist = new ArrayList<String>();
 
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+
+                    switch(position) {
+                        case 0:
+                            FragmentManager fm = getFragmentManager();
+                            Fragment fragment = new ChatActivity();
+                            fm.beginTransaction().replace(R.id.container, fragment).addToBackStack(null).commit();
+                            break;
+
+
+                    }
+
+
+                }
+            });
 
             return rootView;
         }

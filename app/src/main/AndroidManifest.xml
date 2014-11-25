@@ -21,7 +21,10 @@
             android:name=".GroupActivity"
             android:label="@string/app_name" >
         </activity>
-
+        <activity
+            android:name=".ChatMessages"
+            android:label="@string/app_name" >
+        </activity>
     </application>
 
     <!-- To access Google+ APIs: -->

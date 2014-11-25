@@ -86,6 +86,7 @@ public class FragmentCreateAccount extends Fragment {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 mFirebase.createUser(ETusername1.getText().toString(),ETpassword1.getText().toString(), new Firebase.ResultHandler() {
                     @Override
                     public void onSuccess() {
