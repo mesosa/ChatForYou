@@ -29,7 +29,8 @@ import java.util.List;
 public class GroupActivity extends Activity {
 
 
-    String name;
+    public  String name;
+
     public GroupActivity(){
     }
     public GroupActivity(String name) {
@@ -75,6 +76,8 @@ public class GroupActivity extends Activity {
             super.onCreate(savedInstanceState);
             mFirebase.setAndroidContext(getActivity());
             mFirebase = new Firebase("https://radiant-inferno-8373.firebaseio.com");
+            final ArrayList<String> childrenList = new ArrayList();
+
 
             mFirebase.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -83,14 +86,15 @@ public class GroupActivity extends Activity {
                     Iterable<DataSnapshot> children = dataSnapshot.getChildren();
 
                     for(DataSnapshot ds : children){
-                        Log.d("HEJ", ds.getName());
-                    }
 
+                        childrenList.add(ds.getName());
+
+                    }
                     String list_items = dataSnapshot.getValue().toString();
 
                     String[] values = list_items.split(",");
 
-                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),android.R.layout.simple_list_item_1, values);
+                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),android.R.layout.simple_list_item_1, childrenList);
                     lv.setAdapter(arrayAdapter);
                 }
 
@@ -111,18 +115,22 @@ public class GroupActivity extends Activity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mFirebase.child("group " + ETgroupName.getText().toString()).setValue(ETgroupName.getText().toString());
+
+
+
+                    mFirebase.child(ETgroupName.getText().toString());
 
                     mFirebase.addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(DataSnapshot snapshot, String s) {
-// Add children to your list, and then notify the adapter of the changes
-                            arraylist.add(s);
                             System.out.println(snapshot.getValue()+ " " + s);  //prints "Do you have data? You'll love Firebase."
+
+// Add children to your list, and then notify the adapter of the changes
 
                         }
                         @Override
                         public void onChildChanged(DataSnapshot snapshot, String s) {
+
                         }
                         @Override
                         public void onChildRemoved(DataSnapshot snapshot) {
@@ -135,7 +143,7 @@ public class GroupActivity extends Activity {
                         }
                     });
 
-                    arraylist.add(ETgroupName.getText().toString());
+                   arraylist.add(ETgroupName.getText().toString());
                //     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),android.R.layout.simple_list_item_1, arraylist);
                 //    lv.setAdapter(arrayAdapter);
 
@@ -156,8 +164,11 @@ public class GroupActivity extends Activity {
                             Fragment fragment = new ChatActivity();
                             fm.beginTransaction().replace(R.id.container, fragment).addToBackStack(null).commit();
                             break;
-
-
+                        case 1:
+                            FragmentManager fm2 = getFragmentManager();
+                            Fragment fragment2 = new ChatActivity();
+                            fm2.beginTransaction().replace(R.id.container, fragment2).addToBackStack(null).commit();
+                            break;
                     }
 
 
