@@ -12,7 +12,7 @@ import android.widget.EditText;
 import com.firebase.client.Firebase;
 
 /**
- * Created by Mosa on 2014-11-24.
+ * Created by Mosa_fag on 2014-11-24.
  */
 public class ChatMessages{
     String id;
@@ -63,37 +63,4 @@ public class ChatMessages{
         this.message = message;
     }
 
-    //     public static class PlaceholderFragment extends Fragment  {
-
-    public static class PlaceholderFragment extends Fragment {
-
-        String timestamp;
-        Firebase mFirebase;
-        public void onCreate(Bundle savedInstance){
-
-            mFirebase.setAndroidContext(getActivity());
-            mFirebase = new Firebase("https://radiant-inferno-8373.firebaseio.com");
-
-        }
-
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance){
-
-            View rootView = inflater.inflate(R.layout.chat_layout, container, false);
-            Button b = (Button)rootView.findViewById(R.id.sendmsgbutton);
-            EditText msgTxt = (EditText)rootView.findViewById(R.id.sendmessagetext);
-
-
-            b.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-
-
-                }
-            });
-
-            return rootView;
-
-        }
-    }
 }

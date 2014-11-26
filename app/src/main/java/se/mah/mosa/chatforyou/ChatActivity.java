@@ -45,7 +45,11 @@ public class ChatActivity extends Fragment {
     ListView lv;
     List<String> arraylist;
     ArrayAdapter<String> arrayAdapter;
+    ArrayList<String> childrenList;
+
     Firebase mFirebase;
+    ChatMessages cm;
+
 
 
     /**
@@ -59,12 +63,12 @@ public class ChatActivity extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static ChatActivity newInstance(String param1, String param2) {
         ChatActivity fragment = new ChatActivity();
+
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
-
     }
     public ChatActivity() {
         // Required empty public constructor
@@ -76,6 +80,8 @@ public class ChatActivity extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+            childrenList = new ArrayList();
+
 
             lv = (ListView)getView().findViewById(R.id.chatlist);
 
@@ -86,14 +92,13 @@ public class ChatActivity extends Fragment {
                     Iterable<DataSnapshot> children = dataSnapshot.getChildren();
 
                     for(DataSnapshot ds : children){
-                        Log.d("HEJ", ds.getName());
+
+                        childrenList.add(ds.getName());
+
                     }
 
-                    String list_items = dataSnapshot.getChildren().toString();
 
-                    String[] values = list_items.split(",");
-
-                    arrayAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, arraylist);
+                    arrayAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, childrenList);
                     lv.setAdapter(arrayAdapter);
                 }
 
@@ -120,12 +125,16 @@ public class ChatActivity extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Firebase hopperRef = mFirebase.child("Name");
+                Firebase hopperRef = mFirebase.child("name");
                 Map<String, Object> msg = new HashMap<String, Object>();
+                String id = hopperRef.push().getName();
+                cm = new ChatMessages(id, "Hello", sendMsg.getText().toString(), "hehe");
 
-                msg.put("Mosa", sendMsg.getText().toString());
+                hopperRef.push().setValue(cm);
 
-                hopperRef.updateChildren(msg);
+               // msg.put(id, cm);
+
+                //hopperRef.updateChildren(msg);
 
                 hopperRef.addChildEventListener(new ChildEventListener() {
                     @Override

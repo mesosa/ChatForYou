@@ -61,6 +61,8 @@ public class GroupActivity extends Activity {
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment  {
+        ArrayList<String> childrenList;
+
 
         EditText ETgroupName;
         ListView lv;
@@ -76,7 +78,7 @@ public class GroupActivity extends Activity {
             super.onCreate(savedInstanceState);
             mFirebase.setAndroidContext(getActivity());
             mFirebase = new Firebase("https://radiant-inferno-8373.firebaseio.com");
-            final ArrayList<String> childrenList = new ArrayList();
+             childrenList = new ArrayList();
 
 
             mFirebase.addValueEventListener(new ValueEventListener() {
@@ -90,9 +92,6 @@ public class GroupActivity extends Activity {
                         childrenList.add(ds.getName());
 
                     }
-                    String list_items = dataSnapshot.getValue().toString();
-
-                    String[] values = list_items.split(",");
 
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),android.R.layout.simple_list_item_1, childrenList);
                     lv.setAdapter(arrayAdapter);
@@ -116,16 +115,14 @@ public class GroupActivity extends Activity {
                 @Override
                 public void onClick(View v) {
 
-
-
-                    mFirebase.child(ETgroupName.getText().toString());
+                    Group gp = new Group(ETgroupName.getText().toString());
+                    mFirebase.setValue(gp);
+                    
 
                     mFirebase.addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(DataSnapshot snapshot, String s) {
-                            System.out.println(snapshot.getValue()+ " " + s);  //prints "Do you have data? You'll love Firebase."
-
-// Add children to your list, and then notify the adapter of the changes
+                            System.out.println(snapshot.getValue()+ " " + s);
 
                         }
                         @Override
@@ -143,9 +140,6 @@ public class GroupActivity extends Activity {
                         }
                     });
 
-                   arraylist.add(ETgroupName.getText().toString());
-               //     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),android.R.layout.simple_list_item_1, arraylist);
-                //    lv.setAdapter(arrayAdapter);
 
                 }
             });
@@ -177,42 +171,6 @@ public class GroupActivity extends Activity {
 
             return rootView;
         }
-//        @Override
-//        public void onViewCreated(View view, Bundle savedInstanceState) {
-//            final ListView lv = (ListView)getView().findViewById(R.id.listView);
-//            List<String> arraylist = new ArrayList<String>();
-//            arraylist.add("foo");
-//            arraylist.add("bar");
-//            arraylist.add("foo");
-//            arraylist.add("bar");
-//            arraylist.add("foo");
-//            arraylist.add("bar");
-//            arraylist.add("foo");
-//            arraylist.add("bar");
-//            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this.getActivity(),android.R.layout.simple_list_item_1, arraylist);
-//            lv.setAdapter(arrayAdapter);
-//            lv.setClickable(true);
-//            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//                @Override
-//                public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-//
-//                    switch(position) {
-//                        case 0:
-//                            FragmentManager fm = getFragmentManager();
-//                            Fragment fragment = new ChatActivity();
-//                            fm.beginTransaction().replace(R.id.container, fragment).addToBackStack(null).commit();
-//                            break;
-//
-//
-//                    }
-//
-//
-//                }
-//            });
-//            super.onViewCreated(view, savedInstanceState);
-//        }
     }
-
 
 }
