@@ -18,11 +18,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".GroupActivity"
+            android:name=".GroupFragment"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".ChatMessages"
+            android:name=".ChatMessage"
             android:label="@string/app_name" >
         </activity>
     </application>

@@ -3,7 +3,8 @@ package se.mah.mosa.chatforyou;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Intent;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -96,9 +97,12 @@ public class MyActivity extends Activity {
                         @Override
                         public void onAuthenticated(AuthData authData) {
                             Toast.makeText(getActivity(), "Login successful", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent (getActivity().getApplicationContext(), GroupActivity.class);
+                            getFragmentManager().beginTransaction().replace(R.id.container, GroupFragment.newInstance(), "group").commit();
 
-                            startActivity(intent);
+                            SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+                            SharedPreferences.Editor edit = prefs.edit();
+                            edit.putString("uid", authData.getUid());
+                            edit.commit();
                         }
 
                         @Override
